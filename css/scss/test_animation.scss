@@ -1,0 +1,41 @@
+//the ... represents argument lists that are of variable length
+@mixin x-browser-transition($property...){
+  -transition: $property;
+  -webkit-transition: $property;
+  -moz-transition: $property;
+  -o-transition: $property;
+}
+
+@mixin x-browser-transform($property){
+  -webkit-transform: $property;
+  -moz-transform: $property;
+  -o-transform: $property;
+  -transform: $property;
+}
+
+.container{
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:1024px;
+  height:768px;
+  display: -webkit-flex;
+  background-color: #1c94c4;
+  overflow: hidden;
+}
+
+.right-col{
+  background-color: #333333;
+  width:200px;
+  height:768px;
+  position:relative;
+  left:824px;
+  opacity: 0.8;
+
+  @include x-browser-transition(transform 0.5s ease, opacity 0.75s ease);
+}
+
+.hidden{
+  @include x-browser-transform(translateX(200px));
+  opacity: 0;
+}

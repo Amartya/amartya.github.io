@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Energy Monsters</title>
+
+    <!-- CSS files -->
+    <link href="css/index.css" type="text/css" rel="stylesheet" />
+    <link href="css/jquery-ui.css" type="text/css" rel="stylesheet" />
+    <meta name="viewport" content="user-scalable=0">
+</head>
+    <body ontouchstart="">
+        <div id="container">
+            <div id="mask-screen" class="mask mask-fade"></div>
+            <div id="background-image"></div>
+            <div id="splash-screen"  class="page">
+                <div id="start-text">Invasion of the Energy Monsters</div>
+                <div id="main-menu-col">
+                    <div id="start-game" class="game-button">Start Game</div>
+                    <div id="rules" class="game-button">Rules</div>
+                </div>
+            </div>
+            <div class="right-col hidden">
+                <div class="appliance">
+                    <div class="appliance-icon"><img src="img/appliances/washer.png"/></div>
+                    <div class="appliance-description">washer</div>
+                </div>
+            </div>
+            <div id="spinner-screen" class="right-page-hidden">
+                <div class="top-bar">
+                    <div class="prev nav-element back-to-main">
+                        <img src="img/back_btn.png">
+                        <span> Back</span>
+                    </div>
+                    <div class="title">Energy Spinner</div>
+                </div>
+                <canvas  id="spinner" width="600px" height="600px"></canvas>
+                <div id="spinner-control-row">
+                    <div id="button-minus" class="game-button">- 25 watts</div>
+                    <div id="button-spin" class="game-button">Spin</div>
+                    <div id="button-plus" class="game-button">+ 25 watts</div>
+                </div>
+                <img id="home-icon" class="home-energy">
+            </div>
+            <div id="rules-screen" class="right-page-hidden">
+                <div id="rule-content">
+                    <div class="top-bar">
+                        <div class="prev nav-element back-to-main">
+                            <img src='img/back_btn.png'/>
+                            <span> Back</span>
+                        </div>
+                        <div class="title">Energy Spinner</div>
+                    </div>
+                    <div class="rule-content-without-img">
+                        <div class="rule-text"></div>
+                    </div>
+                    <div class="rule-content-with-img">
+                        <img src="img/wattwolf.png"/>
+                        <div class="rule-text">Ampires love doing things inefficiently. Watch out or they'll run the dishwasher when it's half empty.</div>
+                    </div>
+                </div>
+                <div class="bottom-bar">
+                    <div class="prev nav-element nav-button">
+                        <img src="img/back_btn.png" style="vertical-align:middle">
+                        <span style=""> Prev</span>
+                    </div>
+                    <div class="nav-element page-status">Page <span class="lower-bound"> 1 </span> of <span class="upper-bound"> 13 </span></div>
+                    <div class="next nav-element nav-button">
+                        <span style="">Next </span>
+                        <img src="img/next_btn.png" style="vertical-align:middle">
+                    </div>
+                </div>
+            </div>
+
+            <div class="appliance-modal modal-hide">
+                <div class="close"><img class="close-img" src="img/close.png"/></div>
+                <div class="appliance-main-panel">
+                    <div class="appliance-icon"><img class="app-icon" src="img/appliances/washer.png"/></div>
+                    <div id="app-desc" class="appliance-description">washer</div>
+                    <div class="appliance-energy">500 watts</div>
+                </div>
+                <div class="appliance-long-description">this is a washer</div>
+                <div class="appliance-action-row">
+                    <div id="appliance-action-buttonplus" class="game-button">add</div>
+                    <div id="appliance-action-buttonminus" class="game-button">remove</div>
+                </div>
+            </div>
+        </div>
+        <div style="font-family: quicksand;font-size:1px">.</div>
+        <script type="text/javascript" src="js/dynamics.min.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/content.js"></script>
+        <script type="application/dart" src="dart/main.dart"></script>
+        <script src="js/dart.js"></script>
+        <script>
+            //show modal on clicking an appliance
+            function showModalOnClick(){
+                //set the image and other data for appliance
+                var key = $(this).attr('id').split('appliance-')[1];
+                var clicked_icon = getDataFromKey(applianceData, "appliance_num", parseInt(key)).appliance_icon.split('.png')[0];
+                var selected_icon = $('.appliance-modal').find('img').attr('src').split('.png')[0];
+                var displayModal = false;
+
+                if(selected_icon.indexOf(clicked_icon)<= -1){
+                    displayModal = true;
+                }
+
+                var appliance = getDataFromKey(applianceData, "appliance_num", parseInt(key));
+
+                $('.appliance-modal').find('.app-icon').attr('src',appliance.appliance_icon.split('.png')[0]+ '128.png');
+                $('.appliance-modal').find('.appliance-description').html(appliance.appliance_name);
+                $('.appliance-modal').find('.appliance-long-description').html(appliance.long_description);
+                $('.appliance-modal').find('.appliance-energy').html(appliance.energy + " Watts");
+
+                if(displayModal){
+                    showModal();
+                }
+            };
+            $(document).ready(function() {
+                //read content for the rules screen from the json/content.js file
+                //and set the first rule page data
+                var ruleData = JSON.parse(content);
+                var firstPageContent = getDataFromKey(ruleData,"page_num",1);
+                setRulePageContent(firstPageContent, "right");
+
+                var startText = document.querySelector('#start-text');
+                animateSpring(100, 2500, onEntryComplete);
+
+                function onEntryComplete(){
+                    $("#main-menu-col").fadeIn(400);
+                }
+
+                //rules page navigation, previous page
+                $("#rules-screen").on('mousedown touchend','.prev',function(event){
+                    event.preventDefault();
+                    var currPageNum = parseInt($('.lower-bound').html());
+                    var prevPageNum = Math.max(currPageNum-1,1);
+                    var prevPageContent = getDataFromKey(ruleData,"page_num",prevPageNum);
+
+                    setRulePageContent(prevPageContent, "left");
+                });
+
+                //rules page navigation, next page
+                $("#rules-screen").on('mousedown touchend','.next',function(event){
+                    event.preventDefault();
+                    var currPageNum = parseInt($('.lower-bound').html());
+                    var nextPageNum = Math.min(currPageNum+1,ruleData.length);
+                    var nextPageContent = getDataFromKey(ruleData,"page_num",nextPageNum);
+
+                    setRulePageContent(nextPageContent, "right");
+                });
+
+
+                function animateSpring(distance, duration, callback){
+                    dynamics.animate(startText, {
+                        translateY: distance
+                    }, {
+                        type: dynamics.spring,
+                        frequency: 250,
+                        friction: 150,
+                        duration: duration,
+                        complete:callback
+                    })
+                }
+
+                function setRulePageContent(pageContent,direction){
+                    if(pageContent.content_type == "content_without_image"){
+                        $('.rule-content-with-img').fadeOut(0);
+                        $('.rule-content-without-img').fadeOut(0);
+
+                        $('.rule-content-without-img').find('.rule-text').html(pageContent.text);
+                        $('.rule-content-without-img').show('slide', {direction: direction}, 650);
+                    }
+                    else{
+                        $('.rule-content-with-img').fadeOut(0);
+                        $('.rule-content-without-img').fadeOut(0);
+
+                        $('.rule-content-with-img').find('.rule-text').html(pageContent.text);
+                        $('.rule-content-with-img').find('img').attr('src',pageContent.img_data);
+
+                        $('.rule-content-with-img').show('slide', {direction: direction}, 650);
+                    }
+
+                    $('#rule-content').find('.title').html(pageContent.page_title);
+                    $('.lower-bound').html(pageContent.page_num.toString());
+                    $('.upper-bound').html(ruleData.length.toString());
+
+                    if(pageContent.page_num == 1){
+                        $('.prev.nav-button').css('color','#999');
+                        $('.prev.nav-button').find('img').attr('src','img/back_btn_on_click.png');
+                        $('.prev.nav-button').addClass('inactive');
+                    }
+                    else{
+                        $('.prev.nav-button').css('color','white');
+                        $('.prev.nav-button').find('img').attr('src','img/back_btn.png');
+                        $('.prev.nav-button').removeClass('inactive');
+                    }
+
+                    if(pageContent.page_num == ruleData.length){
+                        $('.next.nav-button').css('color','#999');
+                        $('.next.nav-button').find('img').attr('src','img/next_btn_on_click.png');
+                        $('.next.nav-button').addClass('inactive');
+                    }
+                    else{
+                        $('.next.nav-button').css('color','white');
+                        $('.next.nav-button').find('img').attr('src','img/next_btn.png');
+                        $('.next.nav-button').removeClass('inactive');
+                    }
+                }
+
+
+                function getDataFromKey(jsonArr, keyName, keyValue) {
+                    for (var i=0; i < jsonArr.length; i++)
+                        if (jsonArr[i][keyName] == keyValue)
+                            return jsonArr[i];
+                    return "no value found";
+                }
+
+                function preload(sources)
+                {
+                    var images = [];
+                    for (i = 0, length = sources.length; i < length; ++i) {
+                        images[i] = new Image();
+                        images[i].src = sources[i];
+                    }
+
+                    return images;
+                }
+
+            });
+
+            function showAppliancePanel(){
+                $('#mask').fadeTo(500,0.85, function(){});
+                //$('.right-col').show('slide', {direction: 'right'}, 500);
+            }
+
+            function hideAppliancePanel(){
+                if($('.right-col').css('display') == "block"){
+                    hideModal();
+                }
+            }
+
+            function hideModal(){
+                $('#mask').fadeOut(0);
+                $('.right-col').hide('slide', {direction: 'right'}, 500);
+                $('.appliance-modal').hide('scale',{ percent: 0 }, 500);
+            }
+
+            function showModal(){
+                $('.appliance-modal').show('scale',{ percent: 100 }, 500);
+            }
+        </script>
+    </body>
+</html>

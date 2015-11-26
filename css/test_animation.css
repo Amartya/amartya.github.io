@@ -1,0 +1,30 @@
+.container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 1024px;
+  height: 768px;
+  display: -webkit-flex;
+  background-color: #1c94c4;
+  overflow: hidden; }
+
+.right-col {
+  background-color: #333333;
+  width: 200px;
+  height: 768px;
+  position: relative;
+  left: 824px;
+  opacity: 0.8;
+  -transition: transform 0.5s ease, opacity 0.75s ease;
+  -webkit-transition: transform 0.5s ease, opacity 0.75s ease;
+  -moz-transition: transform 0.5s ease, opacity 0.75s ease;
+  -o-transition: transform 0.5s ease, opacity 0.75s ease; }
+
+.hidden {
+  -webkit-transform: translateX(200px);
+  -moz-transform: translateX(200px);
+  -o-transform: translateX(200px);
+  -transform: translateX(200px);
+  opacity: 0; }
+
+/*# sourceMappingURL=test_animation.css.map */
