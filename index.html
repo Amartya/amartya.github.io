@@ -92,29 +92,6 @@
         <script type="text/javascript" src="js/content.js"></script>
         <script type="text/javascript" src="dart/main.dart.js"></script>
         <script>
-            //show modal on clicking an appliance
-            function showModalOnClick(){
-                //set the image and other data for appliance
-                var key = $(this).attr('id').split('appliance-')[1];
-                var clicked_icon = getDataFromKey(applianceData, "appliance_num", parseInt(key)).appliance_icon.split('.png')[0];
-                var selected_icon = $('.appliance-modal').find('img').attr('src').split('.png')[0];
-                var displayModal = false;
-
-                if(selected_icon.indexOf(clicked_icon)<= -1){
-                    displayModal = true;
-                }
-
-                var appliance = getDataFromKey(applianceData, "appliance_num", parseInt(key));
-
-                $('.appliance-modal').find('.app-icon').attr('src',appliance.appliance_icon.split('.png')[0]+ '128.png');
-                $('.appliance-modal').find('.appliance-description').html(appliance.appliance_name);
-                $('.appliance-modal').find('.appliance-long-description').html(appliance.long_description);
-                $('.appliance-modal').find('.appliance-energy').html(appliance.energy + " Watts");
-
-                if(displayModal){
-                    showModal();
-                }
-            };
             $(document).ready(function() {
                 //read content for the rules screen from the json/content.js file
                 //and set the first rule page data
@@ -214,40 +191,7 @@
                             return jsonArr[i];
                     return "no value found";
                 }
-
-                function preload(sources)
-                {
-                    var images = [];
-                    for (i = 0, length = sources.length; i < length; ++i) {
-                        images[i] = new Image();
-                        images[i].src = sources[i];
-                    }
-
-                    return images;
-                }
-
             });
-
-            function showAppliancePanel(){
-                $('#mask').fadeTo(500,0.85, function(){});
-                //$('.right-col').show('slide', {direction: 'right'}, 500);
-            }
-
-            function hideAppliancePanel(){
-                if($('.right-col').css('display') == "block"){
-                    hideModal();
-                }
-            }
-
-            function hideModal(){
-                $('#mask').fadeOut(0);
-                $('.right-col').hide('slide', {direction: 'right'}, 500);
-                $('.appliance-modal').hide('scale',{ percent: 0 }, 500);
-            }
-
-            function showModal(){
-                $('.appliance-modal').show('scale',{ percent: 100 }, 500);
-            }
         </script>
     </body>
 </html>

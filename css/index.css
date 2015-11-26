@@ -381,7 +381,8 @@
     #container .appliance-modal .close {
       height: 50px;
       width: 50px;
-      position: relative; }
+      position: relative;
+      cursor: pointer; }
       #container .appliance-modal .close .close-img {
         height: 40px;
         width: 40px;
