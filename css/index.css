@@ -38,11 +38,12 @@
     background-color: #997d4f;
     border-style: solid;
     border-color: #e5be20; }
-  .game-button .inactive {
-    background-color: #999;
-    border-style: solid;
-    border-color: #444;
-    color: #666; }
+
+.gamebutton-inactive {
+  background-color: #999;
+  border-style: solid;
+  border-color: #444;
+  color: #666; }
 
 #background-image {
   z-index: -1;
@@ -288,6 +289,7 @@
       border: 2px solid #e5be20;
       background-color: white;
       margin: 10px auto;
+      cursor: pointer;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       -khtml-user-select: none;
